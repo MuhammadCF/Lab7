@@ -85,30 +85,89 @@
       // the writeup to view the URL pattern for fetch one and fetch all
       function fetchAll() {
         // TODO
+        let endpoint = document.getElementById('endpoint').value;
+        let output = document.getElementById('output');
+        console.log(endpoint);
+
+        fetch(endpoint).then((response) => 
+          response.json()).then((data) => {
+
+            output.textContent = JSON.stringify(data);
+          }).catch((err) =>{
+            output.textContent = err;
+          });
       }
 
       // This function should fetch one entry from the given endpoint.
       // From the 4 CRUD actions, this is the READ action, and uses the GET http method.
       // The main difference from fetchAll() will be the URL you request from; check
       // the writeup to view the URL pattern for fetch one and fetch all
-      function fetchOne() {
+      function fetchOne(id) {
         // TODO
+        let endpoint = document.getElementById('endpoint').value + '/' + id;
+        let output = document.getElementById('output');
+        console.log(endpoint);
+
+        fetch(endpoint).then((response) => 
+          response.json()).then((data) => {
+
+            output.textContent = JSON.stringify(data);
+          }).catch((err) =>{
+            output.textContent = err;
+          });
       }
 
       // This function should use fetch to create one entry in the given endpoint.
       // From the 4 CRUD actions, this is the CREATE action, and uses the POST http method.
       // The main difference from updateRecord() will be the URL you send data to; check
       // the writeup to view the URL pattern for create and update
-      function createRecord() {
+      function createRecord(author, title) {
         // TODO
+        let endpoint = document.getElementById('endpoint').value;
+        let output = document.getElementById('output');
+        let content = {'title': title, 'author': author};
+        //console.log(endpoint);
+        //alert(author);
+        console.log(title);
+
+        fetch(endpoint, 
+        {method: 'POST',
+        headers: {'Content-Type' : 'application/json'},
+        body: JSON.stringify(content)}).then((response) => 
+          response.json()).then((data) => {
+
+            output.textContent = JSON.stringify(data);
+          }).catch((err) =>{
+            output.textContent = err;
+          });
+
+
+
       }
 
       // This function should use fetch to update one existing entry in the given endpoint.
       // From the 4 CRUD actions, this is the UPDATE action, and uses the PUT http method.
       // The main difference from createRecord() will be the URL you send data to; check
       // the writeup to view the URL pattern for create and update
-      function updateRecord() {
+      function updateRecord(author, title, id) {
         // TODO
+        let endpoint = document.getElementById('endpoint').value + '/' + id;
+        let output = document.getElementById('output');
+        let content = {'title': title, 'author': author};
+        console.log(endpoint);
+
+        fetch(endpoint, 
+        {method: 'PUT',
+        headers: {'Content-Type' : 'application/json'},
+        body: JSON.stringify(content)}).then((response) => 
+          response.json()).then((data) => {
+
+            output.textContent = JSON.stringify(data);
+          }).catch((err) =>{
+            output.textContent = err;
+          });
+
+
       }
 
       // This function should use fetch to delete one existing entry in the given endpoint.
@@ -116,8 +175,23 @@
       // The main difference from fetchOne() will be the HTTP method you use to make your
       // request; check the writeup to view the URL pattern for get one and delete. THERE IS NO 
       // delete all, only delete one.
-      function deleteRecord() {
+      function deleteRecord(id) {
         // TODO
+
+        let endpoint = document.getElementById('endpoint').value + '/' + id;
+        let output = document.getElementById('output');
+        console.log(endpoint);
+
+        fetch(endpoint, {method: 'DELETE'}).then((response) => 
+          response.json()).then((data) => {
+
+            output.textContent = JSON.stringify(data);
+          }).catch((err) =>{
+            output.textContent = err;
+          });
+
+
+
       }
 
       window.addEventListener('DOMContentLoaded', () => {
@@ -127,22 +201,37 @@
           .addEventListener("submit", event => {
             event.preventDefault();
             let command = document.getElementById('action').value;
+            let output = document.getElementById('output');
 
             switch (command) {
               case "List All":
+                document.getElementById('recordIDcontainer').style.display = 'none';
+                document.getElementById('recordForm').style.display = 'none';
                 fetchAll();
                 break;
               case "List One":
-                fetchOne();
+                document.getElementById('recordIDcontainer').style.display = 'none';
+                document.getElementById('recordForm').style.display = 'none';
+                let theId = window.prompt('please insert the id: ')
+                fetchOne(theId);
                 break;
               case "Create":
-                createRecord('show');
+                //createRecord('show');
+                document.getElementById('recordIDcontainer').style.display = 'none';
+                document.getElementById('recordForm').style.display = 'block';
+                output.textContent = '';
                 break;
               case "Update":
-                updateRecord('show');
+                document.getElementById('recordIDcontainer').style.display = 'block';
+                document.getElementById('recordForm').style.display = 'block';
+                output.textContent = '';
+                //updateRecord('show');
                 break;
               case "Delete":
-                deleteRecord();
+                document.getElementById('recordIDcontainer').style.display = 'none';
+                document.getElementById('recordForm').style.display = 'none';
+                let theId2 = window.prompt('please insert the id: ')
+                deleteRecord(theId2);
                 break;
               default:
                 alert("Error: Illegal Action");
@@ -155,13 +244,16 @@
           .addEventListener("submit", event => {
             event.preventDefault();
             let command = document.getElementById('action').value;
-            
+            let authorName = document.getElementById('author').value;
+            let titleName = document.getElementById('title').value;
+            let theId = document.getElementById('recordID').value;
+
             switch (command) {
               case "Create":
-                createRecord('submit');
+                createRecord(authorName, titleName);
                 break;
               case "Update":
-                updateRecord('submit');
+                updateRecord(authorName, titleName, theId);
                 break;
               default:
                 alert("Error: Illegal Action");
